@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-light fw-bold">
+        <i class="bi bi-chat-right-text text-info"></i> 掲示板トーク一覧
+    </h2>
+
+    <div class="glass-container">
+        <div class="list-group">
+            {% for item in chat_list %}
+            <div class="list-group-item list-group-item-action p-3 mb-2 border rounded shadow-sm position-relative bg-white">
+                <div class="row align-items-center">
+                    <div class="col-md-8 col-sm-7">
+                        <h5 class="mb-1 fw-bold text-primary">
+                            {{ item.reservation.title }}
+                            {% if item.has_new %}
+                                <span class="badge rounded-pill bg-danger animate__animated animate__flash animate__infinite">新着！</span>
+                            {% endif %}
+                        </h5>
+                        <p class="mb-1 text-dark">
+                            <span class="badge bg-light text-dark border me-1">{{ item.last_message.author.nickname }}</span>
+                            <span class="text-secondary">{{ item.last_message.text|truncatechars:20 }}</span>
+                        </p>
+                        <small class="text-muted">
+                            <i class="bi bi-clock"></i> {{ item.last_message.created_at|date:"n/j H:i" }}
+                        </small>
+                    </div>
+
+                    <div class="col-md-4 col-sm-5 text-end mt-2 mt-sm-0">
+                        <div class="d-grid d-sm-flex gap-2 justify-content-sm-end">
+                            <a href="{% url 'booking:lesson_detail' item.reservation.pk %}" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-info-circle"></i> 詳細/掲示板へ
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center p-5 text-muted">
+                まだメッセージはありません。
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'booking:calendar' %}" class="btn btn-outline-light">カレンダーに戻る</a>
+    </div>
+</div>
+{% endblock %}

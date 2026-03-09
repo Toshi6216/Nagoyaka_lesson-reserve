@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="card shadow-sm p-5 border-0">
+        <i class="bi bi-check-circle text-success fs-1 mb-3"></i>
+        <h2>承認が完了しました</h2>
+        <p class="text-muted mt-3"><b>{{ target_user.nickname }}</b> さんがログインできるようになりました。</p>
+        <p class="small text-secondary">生徒さんへ完了通知メールを送信しました。</p>
+        <div class="mt-4">
+            <a href="{% url 'booking:calendar' %}" class="btn btn-primary">カレンダーへ戻る</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

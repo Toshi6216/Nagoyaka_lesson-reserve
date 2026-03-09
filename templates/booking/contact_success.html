@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 80px auto; padding: 40px; background-color: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center;">
+  
+  <h2 style="color: #333; margin-bottom: 20px;">お問い合わせ内容を 送信しました！</h2>
+  <p style="color: #666; margin-bottom: 30px;">スタッフが 確認するまでお待ちください。</p>
+
+  <div style="margin-top: 30px;">
+    <a href="{% url 'booking:calendar' %}" style="text-decoration: none; background-color: #28a745; color: white; padding: 12px 25px; border-radius: 5px; font-weight: bold; display: inline-block;">
+      カレンダーに もどる
+    </a>
+  </div>
+</div>
+{% endblock %}

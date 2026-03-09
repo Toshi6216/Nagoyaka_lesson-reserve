@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.min.js'></script>
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="calendar-title">レッスン予約カレンダー</h2>
+        <p class="text-white" style="text-shadow: 1px 1px 2px black;">受けたいレッスンをタップして詳細を確認してね！</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="{% url 'booking:my_bookings' %}" class="btn btn-outline-light btn-sm shadow-sm">
+                <i class="fas fa-list-ul me-1"></i>自分の予約を確認
+            </a>
+        </div>
+        
+        {% if user.is_staff %}
+        <div class="d-flex align-items-center gap-2">
+            <span id="selected-date-info" class="badge bg-light text-dark shadow-sm py-2 d-none"></span>
+            <a href="{% url 'booking:lesson_add' %}" id="create-btn" class="btn btn-warning btn-sm fw-bold shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i>レッスンを登録
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+   <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0" style="background-color: rgba(255, 255, 255, 0.9); border-radius: 15px;">
+                <div class="card-header bg-primary text-white fw-bold" style="border-radius: 15px 15px 0 0;">
+                    <i class="bi bi-list-stars me-2"></i><span id="selected-date-header">日付を選んでね</span>
+                </div>
+                <div class="card-body p-2" id="event-list" style="max-height: 600px; overflow-y: auto;">
+                    <div class="p-4 text-center text-muted">カレンダーの日付をタップすると<br>ここに詳細が出ます</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-lg p-2" style="background-color: rgba(255, 255, 255, 0.95); border-radius: 15px;">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #calendar { color: #333 !important; min-height: 500px; background: white; border-radius: 10px; }
+    .fc-toolbar-title { color: #333 !important; font-weight: bold; font-size: 1.2rem !important; }
+    .fc-daygrid-day-number { color: #333 !important; text-decoration: none; }
+    .fc-day-sat { background-color: #f0f7ff !important; }
+    .fc-day-sun { background-color: #fff5f5 !important; }
+    .calendar-title { font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var createBtn = document.getElementById('create-btn');
+    var dateInfo = document.getElementById('selected-date-info');
+    var cachedDailyData = {};
+
+    // [ステップ] 共通のクリック処理をひとまとめにするよ
+    function handleDateSelection(dateStr) {
+        document.getElementById('selected-date-header').innerText = dateStr;
+        
+        // 1. 登録ボタンの更新
+        if (createBtn) {
+            createBtn.href = "{% url 'booking:lesson_add' %}?date=" + dateStr;
+            dateInfo.innerText = dateStr + " を選択中";
+            dateInfo.classList.remove('d-none');
+        }
+
+        // 2. 詳細リストの表示
+        var eventsOnDay = cachedDailyData[dateStr] || [];
+        var listEl = document.getElementById('event-list');
+        if (eventsOnDay.length === 0) {
+            listEl.innerHTML = '<div class="p-4 text-center text-muted">この日のレッスンはありません</div>';
+        } else {
+            var html = '<div class="list-group list-group-flush">';
+            eventsOnDay.forEach(function(ev) {
+                var startTime = ev.start.split('T')[1].substring(0, 5);
+                html += `
+                    <a href="/booking/lesson/${ev.id}/detail/" class="list-group-item list-group-item-action p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1 fw-bold text-primary">${ev.title}</h6>
+                            <small class="text-muted">${startTime}～</small>
+                        </div>
+                        <div class="mt-1"><span class="badge bg-info text-dark">${ev.p_count}名 予約中</span></div>
+                    </a>`;
+            });
+            html += '</div>';
+            listEl.innerHTML = html;
+        }
+
+        // 3. 自動スクロール
+        // document.getElementById('event-list').closest('.card').scrollIntoView({
+        //     behavior: 'smooth',
+        //     block: 'start'
+        // });
+
+        // --- [ここを修正：スクロール位置の調整] ---
+        // 指定した要素（カード）の場所を取得
+        const element = document.getElementById('event-list').closest('.card');
+        const rect = element.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        // 画面のてっぺんから「60ピクセル」手前で止まるように計算してスクロール！
+        window.scrollTo({
+            top: rect.top + scrollTop - 60, // 「60」の数字を大きくすると、もっと下で止まるよ
+            behavior: 'smooth'
+        });
+        // ---------------------------------------
+
+    }
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'ja',
+        height: 'auto',
+        headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
+        
+        events: function(info, successCallback, failureCallback) {
+            fetch('/booking/get/')
+                .then(response => response.json())
+                .then(data => {
+                    cachedDailyData = data.daily_data;
+                    successCallback(data.event_list);
+                });
+        },
+
+        // [ステップ] マスの空白部分を押したとき
+        dateClick: function(info) {
+            handleDateSelection(info.dateStr);
+        },
+
+        // [ここが重要！] 中にある「●」マークを押したとき
+        eventClick: function(info) {
+            // マークが持っている日付（start）を使って、同じ処理を呼び出すよ
+            var clickedDate = info.event.startStr.split('T')[0];
+            handleDateSelection(clickedDate);
+        },
+
+        
+    });
+    calendar.render();
+});
+</script>
+{% endblock %}

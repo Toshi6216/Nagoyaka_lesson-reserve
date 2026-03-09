@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="contact-container">
+  <h2>お問い合わせ フォーム</h2>
+  <p>スタッフに 聞きたいことを ご記入ください。</p>
+
+    <form action="{% url 'booking:contact_send' %}" method="POST" id="contact-form">
+    {% csrf_token %}
+
+    <div class="field">
+      <label for="name">お名前（必須）:</label><br>
+      <input type="text" name="name" id="name" placeholder="例：やまだ たろう" required>
+    </div>
+
+    <div class="field">
+      <label for="email">メールアドレス（必須）:</label><br>
+      <input type="email" name="email" id="email" placeholder="example@mail.com" required>
+    </div>
+
+    <div class="field">
+      <label for="tel">電話番号（任意）:</label><br>
+      <input type="tel" name="tel" id="tel" placeholder="090-0000-0000">
+    </div>
+
+    <div class="field">
+      <label for="message">お問い合わせ内容（必須）:</label><br>
+      <textarea name="message" id="message" rows="5" placeholder="ききたいことを かいてね！" required></textarea>
+    </div>
+
+    <div class="submit-button">
+        <button type="submit" id="submit-btn">スタッフに メールを送る</button>
+    </div>
+
+  </form>
+</div>
+
+<style>
+  .contact-container { max-width: 500px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+  .field { margin-bottom: 15px; }
+  input, textarea { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ddd; }
+  button { background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+  button:hover { background-color: #0056b3; }
+</style>
+
+<script>
+  // 2. フォームが送信されたときに 動く魔法（プログラム）
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    const btn = document.getElementById('submit-btn');
+    
+    // 3. ボタンを 2回おせないようにして、文字を「送信中...」に変えるよ
+    btn.disabled = true;
+    btn.innerText = '送信中...';
+    btn.style.backgroundColor = '#ccc'; // 色もグレーに変えて「おせないよ」と教える
+  });
+</script>
+
+{% endblock %}

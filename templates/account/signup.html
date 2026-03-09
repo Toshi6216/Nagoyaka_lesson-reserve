@@ -1,0 +1,76 @@
+{% extends "account/base_entrance.html" %}
+
+{% block entrance_content %}
+<h2 class="fw-bold text-center mb-4">はじめての方</h2>
+<p class="text-muted text-center mb-4">アカウントを作って予約をしましょう</p>
+
+<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+  {% csrf_token %}
+  
+  {% for field in form %}
+    <div class="mb-3">
+      {# [ステップ] 項目の種類（name）に合わせてラベルを日本語に書き換える #}
+      <label class="form-label small fw-bold">
+        {% if field.name == "email" %}メールアドレス
+        {% elif field.name == "nickname" %}ニックネーム（表示されるお名前）
+        {% elif field.name == "password1" %}パスワード
+        {% elif field.name == "password2" %}パスワード（もう一度入力）
+        {% else %}{{ field.label }}{% endif %}
+      </label>
+
+      {{ field }}
+
+      {# [ステップ] パスワードの条件など、英語のヒントを日本語のリストにする #}
+      {% if field.name == "password1" %}
+        <div class="form-text text-muted" style="font-size: 0.75rem;">
+          <ul class="ps-3 mb-0 mt-1">
+            <li>8文字以上にしてください。</li>
+            <li>よくある単語や数字だけでは作れません。</li>
+          </ul>
+        </div>
+      {% elif field.help_text %}
+        <div class="form-text" style="font-size: 0.75rem;">{{ field.help_text|safe }}</div>
+      {% endif %}
+
+      {% for error in field.errors %}
+        <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+  <div class="d-grid gap-2 mt-4">
+    <button class="btn btn-success btn-lg shadow-sm" type="submit">アカウントを作成</button>
+  </div>
+</form>
+
+<hr class="my-4">
+
+<div class="text-center">
+    <p class="small text-muted mb-0">すでに登録済みの方は</p>
+    <a href="{% url 'account_login' %}" class="fw-bold">ログインはこちら</a>
+</div>
+
+<script>
+    {# [ステップ] すべての入力欄をBootstrapのおしゃれな形にする #}
+    document.querySelectorAll('#signup_form input').forEach(input => {
+        input.classList.add('form-control');
+        input.classList.add('form-control-lg'); // 少し大きくして入力しやすく
+    });
+
+    // [既存の処理] 入力欄をオシャレにする
+    document.querySelectorAll('#signup_form input').forEach(input => {
+        input.classList.add('form-control');
+        input.classList.add('form-control-lg');
+    });
+
+    // [追加ステップ] ボタンを「処理中」に変える魔法
+    const signupForm = document.getElementById('signup_form');
+    const signupBtn = signupForm.querySelector('button[type="submit"]');
+
+    signupForm.onsubmit = function() {
+        // ボタンを押せなくして、くるくるを表示
+        signupBtn.disabled = true;
+        signupBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> 作成中...`;
+    };
+</script>
+{% endblock %}

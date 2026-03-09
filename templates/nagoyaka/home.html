@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container mt-3 text-center">
+    <a href="{% url 'booking:calendar' %}" class="btn btn-primary btn-xl rounded-pill shadow">
+        <i class="bi bi-calendar3"></i> レッスンカレンダーを見る
+    </a>
+</div>
+{% endif %}
+<section class="page-section clearfix">
+            <div class="container">
+                <div class="intro">
+                    <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/IMG_jackknife.jpg' %}" alt="..." />
+                    <div class="intro-text left-0 text-center bg-faded p-5 rounded">
+                        <h2 class="section-heading mb-4">
+                            <span class="section-heading-upper">info</span>
+                            <span class="section-heading-lower">TAP_NAGOYAKAについて</span>
+                        </h2>
+                        <p class="mb-3">TAP_NAGOYAKAは、自主学習グループでの活動であり、タップ交流の場です。初心者、子供さんからインストラクターのレベルの方まで愛知県内の方々がタップの練習のために集まってくれます。その中で、みんなでできるステップを私が提供しています。インストラクターレベルの方にはその場で振り付けや指導も行っていただける場でもあります。仲間同士お互い教え、伝え合って初心者の方こそ、仲間探しのためにも来ていただきたいところです。
+
+                        スタッフが提供するレッスンでは、体のバランスを整えて行き体に良い動きを目指してステップを踏んでいくので、膝に負担のないよう椅子を使うこともできます。</p>
+                        <!-- <div class="intro-button mx-auto"><a class="btn btn-primary btn-xl" href="#!">Visit Us Today!</a></div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="page-section cta">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 mx-auto">
+                        <div class="cta-inner bg-faded text-left rounded">
+                            <h2 class="section-heading mb-4">
+                                <span class="section-heading-upper"></span>
+                                <span class="section-heading-lower">主な活動の場</span>
+                            </h2>
+                            <p class="mb-0">
+                            私どもTAP_NAGOYAKAの主な活動場所は名古屋演劇練習館(アクテノン)です。稲葉地公園内にあります。部屋は２階の小練習室３です。</p>
+                            <p>見学は連絡いただければ随時行います。初回体験無料です。気軽にどうぞ。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section class="page-section about-heading">
+    <div class="container">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img class="img-fluid rounded about-heading-img shadow" src="{% static 'assets/img/IMG_アクテノン.jpg' %}" alt="アクテノン" />
+            </div>
+
+            <div class="col-lg-6">
+                <div class="about-heading-content bg-faded rounded p-5 shadow-sm">
+                    <h2 class="section-heading mb-4">
+                        <span class="section-heading-upper">Contact</span>
+                        <span class="section-heading-lower">お問い合わせ</span>
+                    </h2>
+
+                  
+                    <div class="contact-info" style="font-size: 1.1rem; line-height: 2;">
+                        <p class="mb-2">
+                            <i class="bi bi-envelope-at-fill text-primary"></i> 
+                            <strong>e-mail :</strong> tap_nagoyaka@yahoo.co.jp
+                        </p>
+                        <p class="mb-0">
+                            <i class="bi bi-instagram text-danger"></i> 
+                            <strong>instagram :</strong> tap_nagoyaka
+                        </p>
+
+                        <div class="home-links">
+                            <a href="{% url 'booking:contact' %}" class="btn-contact">
+                                お問い合わせフォームはこちら
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+</section>
+
+
+
+{% endblock %}
+
+    

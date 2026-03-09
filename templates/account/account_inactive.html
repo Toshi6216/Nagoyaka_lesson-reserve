@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow border-0 p-5">
+                <i class="bi bi-envelope-check text-primary display-1 mb-4"></i>
+                <h2 class="fw-bold">会員登録の申請を受け付けました！</h2>
+                <hr>
+                <p class="lead">ありがとうございます。現在は<b>「仮登録」</b>の状態です。</p>
+                <p class="text-muted">
+                    ただいまスタッフが内容を確認しております。<br>
+                    承認が完了しましたら、ご登録のメールアドレスに通知をお送りします。
+                </p>
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle"></i> 承認されるまでログインはできませんので、そのままお待ちください。
+                </div>
+                <div class="mt-4">
+                    <a href="/" class="btn btn-outline-secondary">トップページへ戻る</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

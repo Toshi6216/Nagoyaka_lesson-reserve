@@ -1,0 +1,249 @@
+/* * TAP_NAGOYAKA 専用 完全体修正版CSS
+ * 小学生でもわかる解説：
+ * 1. 背景を固定してカッコよく
+ * 2. 広い画面では横並び、狭い画面でも崩れない
+ * 3. ハンバーガーメニューを真っ白に！
+ */
+
+/* [ステップ] 1. 背景と全体の設定 */
+body {
+  font-family: "Lora", serif;
+  /* 背景画像をセットし、画面をスクロールしても動かないように固定します */
+  background-image: linear-gradient(rgba(47, 23, 15, 0.65), rgba(47, 23, 15, 0.65)), url("../assets/img/IMG_bg.jpg");
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  color: #333;
+  margin: 0;
+  padding-top: 80px; /* メニューバーの下にコンテンツが潜り込まないための隙間 */
+}
+
+/* [ステップ] 2. メニューバーの設定 */
+.navbar {
+  background-color: rgba(47, 23, 15, 0.9) !important;
+}
+
+.navbar-brand, .nav-link {
+  color: white !important;
+}
+
+/* [修正の重要ポイント] ハンバーガーメニューを真っ白にする */
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 「メニュー」という文字を白くする */
+.navbar-toggler .small {
+  color: #ffffff !important;
+}
+
+/* 三本線のアイコンを白い設計図に書き換える魔法 */
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  filter: none !important; 
+}
+
+/* スマホでメニューを開いたときの背景色 */
+.navbar-collapse {
+  background-color: rgba(47, 23, 15, 0.95);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* [ステップ] 3. セクション（枠）の設定：重なり防止 */
+.page-section {
+  padding: 3rem 0;
+}
+
+/* 白い半透明の背景ボックス */
+.bg-faded {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+/* [修正の魔法] イントロ部分：広い画面では横並び、狭い画面では縦並び */
+.intro {
+  display: flex;
+  flex-direction: column; /* スマホでは縦並び */
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .intro {
+    flex-direction: row-reverse; /* パソコンでは「右に画像、左に文字」で並べる */
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .intro-img {
+    width: 50% !important; /* 画像の幅を半分に固定 */
+    height: auto;
+  }
+
+  .intro-text {
+    width: 45% !important; /* 文字の幅を制限して重なりを防止 */
+    position: static !important; /* 「浮かす」設定を解除して、画像とぶつからないようにする */
+    margin: 0 !important;
+  }
+}
+
+/* [ステップ] 4. 見出しのデザイン */
+.section-heading-upper {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #666;
+}
+
+.section-heading-lower {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+/* [ステップ] 5. フッター */
+.footer {
+  background-color: rgba(47, 23, 15, 0.9);
+  padding: 2rem 0;
+  color: white;
+  text-align: center;
+}
+
+/* [ステップ] カレンダー画面の「レッスン予約システム」のタイトルを見やすくするよ */
+.calendar-title {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 文字に黒い影をつけて浮かび上がらせる魔法！ */
+  font-weight: bold;
+}
+
+/* [ステップ] 「自分の予約を確認」ボタンを目立たせるよ */
+.btn-my-booking {
+  background-color: #e6a756 !important; /* タップシューズに近いオレンジ色にするよ */
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* ボタンに影をつけて押しやすくするよ */
+  font-weight: bold;
+}
+
+/* [ステップ] ボタンの上にマウスをのせたときの色 */
+.btn-my-booking:hover {
+  background-color: #d49645 !important;
+  transform: translateY(-2px); /* 少しだけ上に浮くアニメーションだよ */
+  transition: 0.3s;
+}
+
+/* [ステップ] メニューを開いたときの文字の並びを右寄せにするよ */
+.navbar-nav {
+    width: 100%;
+    text-align: right; /* [解説] これで文字が右端にピタッと寄ります */
+}
+
+/* [ステップ] スマホでメニューを開いたときの「座布団（背景）」も右側に寄せて綺麗にするよ */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: rgba(47, 23, 15, 0.95);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 10px;
+        /* 右端に寄せるための設定 */
+        margin-left: auto;
+        width: 200px; /* メニューの横幅を少しコンパクトにするともっと右寄せ感が出ます */
+    }
+    
+    .nav-item {
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 項目ごとにうっすら線を引いて見やすくするよ */
+    }
+}
+
+/* [ステップ] リンクの文字の間隔を調整して押しやすくするよ */
+.navbar-nav .nav-link {
+    padding: 10px 15px !important;
+}
+
+/* [修正] メニューが2行になるのを防ぐ魔法 */
+.navbar-nav {
+    flex-wrap: nowrap; /* どんなことがあっても改行させない！ */
+}
+
+.nav-link {
+    white-space: nowrap; /* 文字の中で改行されるのを防ぐよ */
+}
+
+/* [追加] タブレットくらいの幅（1200px未満）になったら、早めに三本線メニューに切り替える設定 */
+@media (max-width: 1199.98px) {
+    .navbar-expand-lg .navbar-toggler {
+        display: block !important; /* 三本線ボタンを表示 */
+    }
+    .navbar-expand-lg .navbar-collapse {
+        display: none !important; /* 通常のメニューを隠す */
+    }
+    .navbar-expand-lg .navbar-collapse.show {
+        display: block !important; /* ボタンを押した時だけ出す */
+    }
+    /* スマホ・タブレット表示の時のスタイル */
+    .navbar-nav {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+}
+
+
+.contact-container { 
+  max-width: 500px; 
+  margin: 40px auto; 
+  padding: 30px; 
+  /* 1. 背景を真っ白にして、後ろの画像が見えないようにするよ */
+  background-color: white; 
+  /* 2. 枠線を少し太く、色をはっきりさせるよ */
+  border: 1px solid #ddd; 
+  border-radius: 12px; 
+  /* 3. 箱のまわりに ふわっと影をつけて、浮いてるように見せるよ */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
+
+/* 4. タイトルや説明文の色を「黒」にして読みやすくするよ */
+.contact-container h2, .contact-container p {
+  color: #333;
+  text-align: center;
+}
+
+.field { margin-bottom: 20px; }
+/* 以下、inputやbuttonのスタイル ... */
+
+.btn-contact {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6c757d; /* 落ち着いたグレー */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.btn-contact:hover {
+  background-color: #5a6268;
+}
+
+/* [ステップ] 予約リストや名簿を「白い板」に乗せて見やすくするよ */
+.glass-container {
+    background-color: rgba(255, 255, 255, 0.95); /* 95%の白（ほぼ真っ白） */
+    border-radius: 15px;                        /* 角を丸くして優しく */
+    padding: 25px;                             /* 中に広めの余白を */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);  /* 影をつけて背景から浮かせる */
+    margin-bottom: 30px;
+    color: #333 !important;                     /* 文字の色を濃いグレーで固定 */
+}
+
+/* 白い板の中にあるテーブルの文字も、背景に負けないように黒くする */
+.glass-container table, 
+.glass-container th, 
+.glass-container td {
+    color: #333 !important;
+}
+
+/* テーブルのヘッダーだけ少し色をつけて引き締める */
+.glass-container thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}

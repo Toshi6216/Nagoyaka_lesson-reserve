@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* [ステップ] style.cssの「暗いフィルター」に負けない設定にするよ */
+    .manage-container {
+        /* 文字の周りに白いぼかしを入れて、暗い背景でも読めるようにする魔法 */
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.9);
+        color: #000 !important; /* 文字は絶対に真っ黒！ */
+    }
+
+    .page-title {
+        color: #ffffff !important; /* タイトルはあえて白！ */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* 黒い影で浮かせるよ */
+        font-weight: bold;
+        background: rgba(0, 0, 0, 0.3); /* タイトルの後ろだけ少し暗くして白文字を際立たせる */
+        display: inline-block;
+        padding: 5px 20px;
+        border-radius: 10px;
+    }
+
+    .info-text {
+        color: #ffffff !important;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
+    }
+
+    /* [重要] カードの背景を「真っ白」にして透けさせない */
+    .card-solid {
+        background-color: #ffffff !important; /* 完全に不透明な白！ */
+        border: 2px solid #333;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    /* 表の文字をハッキリさせる */
+    .table-text-fix {
+        color: #000 !important;
+    }
+
+    .table thead th {
+        background-color: #000 !important;
+        color: #fff !important;
+        border: none;
+    }
+
+    /* 自分の行を青っぽくして「特別感」をだすよ */
+    .self-row {
+        background-color: #e7f1ff !important;
+    }
+</style>
+
+<div class="container mt-4 manage-container">
+    <h2 class="page-title mb-3">スタッフ権限の管理</h2>
+    <p class="info-text">生徒さんにスタッフ権限をあげたり、消したりできるよ。</p>
+    
+    <div class="alert alert-info shadow-sm" style="background-color: #d1ecf1 !important; color: #0c5460 !important; border-left: 10px solid #0dcaf0;">
+        <strong>💡 安心設定:</strong> 自分のスタッフ権限を自分で消すことはできないようになっているよ！
+    </div>
+
+    <div class="card card-solid shadow-lg">
+        <div class="card-body p-0"> <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 table-text-fix">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">なまえ</th>
+                            <th>メール</th>
+                            <th>いまの権限</th>
+                            <th class="text-center">きりかえボタン</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr {% if u.id == request.user.id %}class="self-row"{% endif %}>
+                            <td class="fw-bold ps-4">{{ u.nickname|default:u.username }}</td>
+                            <td class="text-dark">{{ u.email }}</td>
+                            <td>
+                                {% if u.is_staff %}
+                                    <span class="badge rounded-pill bg-success" style="font-size: 0.9rem;">スタッフ</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-secondary" style="font-size: 0.9rem;">生徒</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-3">
+                                {% if u.id != request.user.id %}
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="user_id" value="{{ u.id }}">
+                                        
+                                        {% if u.is_staff %}
+                                            <input type="hidden" name="make_staff" value="false">
+                                            <button type="submit" class="btn btn-sm btn-danger px-3 fw-bold" onclick="return confirm('スタッフ権限を消しますか？')">生徒にもどす</button>
+                                        {% else %}
+                                            <input type="hidden" name="make_staff" value="true">
+                                            <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold shadow-sm" onclick="return confirm('この人をスタッフにしますか？')">スタッフにする</button>
+                                        {% endif %}
+                                    </form>
+                                {% else %}
+                                    <span class="badge bg-white text-primary border border-primary p-2">
+                                        <i class="fas fa-user-check me-1"></i>あなた自身
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 mb-5 text-center">
+        <a href="{% url 'booking:calendar' %}" class="btn btn-dark btn-lg px-5 shadow">
+            カレンダーにもどる
+        </a>
+    </div>
+</div>
+{% endblock %}
