@@ -192,8 +192,8 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-LOGIN_REDIRECT_URL = '/'  # ログイン後の移動先
-ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # ログアウト後の移動先
+LOGIN_REDIRECT_URL = '/home/'  # ログイン後の移動先
+ACCOUNT_LOGOUT_REDIRECT_URL = '/home/'  # ログアウト後の移動先
 
 # メールサーバー用の設定（プロ仕様）
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
