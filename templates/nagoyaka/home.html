@@ -2,13 +2,23 @@
 {% load static %}
 {% block content %}
 {% if user.is_authenticated %}
+
 <div class="container mt-3 text-center">
+    
     <a href="{% url 'booking:calendar' %}" class="btn btn-primary btn-xl rounded-pill shadow">
         <i class="bi bi-calendar3"></i> レッスンカレンダーを見る
     </a>
 </div>
 {% endif %}
 <section class="page-section clearfix">
+    <header>
+        <div class="site-heading-wrapper text-center">
+            <h1 class="site-heading">
+                <span class="site-heading-upper">Let's Dance!</span>
+                <span class="site-heading-lower">TAP_NAGOYAKA</span>
+            </h1>
+        </div>
+    </header>
             <div class="container">
                 <div class="intro">
                     <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'assets/img/IMG_jackknife.jpg' %}" alt="..." />

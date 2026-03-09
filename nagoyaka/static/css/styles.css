@@ -247,3 +247,34 @@ body {
     background-color: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
 }
+
+/* [ステップ] タイトルのスタイル */
+.site-heading-wrapper {
+    margin-top: 20px; /* メニューバーの下に少し隙間を作る */
+    margin-bottom: 30px;
+}
+
+.site-heading .site-heading-upper {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e67e22; /* 画像のようなオレンジ色 */
+    text-transform: uppercase;
+}
+
+
+/* [ステップ] タイトル「TAP_NAGOYAKA」をうっすらベージュにする */
+.site-heading .site-heading-lower {
+  font-size: 5rem;
+  font-weight: 100;
+  line-height: 4rem;
+  
+  /* ベージュ色を指定（#e1d5c9 は上品でうっすらしたベージュです） */
+  color: #e1d5c9; 
+  
+  /* 少しだけ透過させる（0.9は90%の不透明度、お好みで0.8〜1.0で調整してください） */
+  opacity: 0.9;
+  
+  /* 文字に薄い影をつけて、背景画像の上でも読みやすくします */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
