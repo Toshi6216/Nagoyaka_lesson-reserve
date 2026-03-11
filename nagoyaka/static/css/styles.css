@@ -265,16 +265,23 @@ body {
 
 /* [ステップ] タイトル「TAP_NAGOYAKA」をうっすらベージュにする */
 .site-heading .site-heading-lower {
-  font-size: 5rem;
+  /* --- 👇【すべての画面（スマホ）での基本設定】👇 --- */
   font-weight: 100;
-  line-height: 4rem;
   
-  /* ベージュ色を指定（#e1d5c9 は上品でうっすらしたベージュです） */
-  color: #e1d5c9; 
+  /* [ここを修正] スマホでは、文字を少し小さくして、2行になってもいい感じにするよ */
+  font-size: 2.5rem;   /* 5rem から半分にしました */
+  line-height: 2.8rem; /* 行と行の間隔も少し狭くします */
   
-  /* 少しだけ透過させる（0.9は90%の不透明度、お好みで0.8〜1.0で調整してください） */
+  color: #e1d5c9; /* 上品なベージュ色 */
   opacity: 0.9;
-  
-  /* 文字に薄い影をつけて、背景画像の上でも読みやすくします */
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 👇【ここから下は、画面が広い時（パソコンなど）だけの追加設定】👇 --- */
+@media (min-width: 992px) {
+  .site-heading .site-heading-lower {
+    /* パソコンでは、元通りのドーンと大きいサイズに戻します */
+    font-size: 5rem;
+    line-height: 4rem;
+  }
 }

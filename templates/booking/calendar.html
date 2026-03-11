@@ -56,6 +56,8 @@
     .fc-day-sat { background-color: #f0f7ff !important; }
     .fc-day-sun { background-color: #fff5f5 !important; }
     .calendar-title { font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+    .lesson-time {font-size: 1rem; color: #555; margin-bottom: 5px; }
+    .time-label {font-weight: bold;  color: #333; }
 </style>
 
 <script>
@@ -84,12 +86,28 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             var html = '<div class="list-group list-group-flush">';
             eventsOnDay.forEach(function(ev) {
-                var startTime = ev.start.split('T')[1].substring(0, 5);
+                // 1. ev.start を JSの Dateオブジェクトに変換する
+                var startDate = new Date(ev.start);
+
+                // 2. 日本時間（JST）の「時(H)」と「分(m)」をそれぞれ取得する
+                var hours = startDate.getHours();
+                var minutes = startDate.getMinutes();
+
+                // 3. 2桁になるようにゼロ埋めして整形（例：9時 -> 09時）
+                var startTime = 
+                    ('0' + hours).slice(-2) + ':' + 
+                    ('0' + minutes).slice(-2);
+
+               
                 html += `
                     <a href="/booking/lesson/${ev.id}/detail/" class="list-group-item list-group-item-action p-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="mb-1 fw-bold text-primary">${ev.title}</h6>
-                            <small class="text-muted">${startTime}～</small>
+                            <div class="lesson-time">
+                                <span class="time-label">開始時間：</span>
+                                <span class="time-value">${startTime}～</span>
+                            </div>
+
                         </div>
                         <div class="mt-1"><span class="badge bg-info text-dark">${ev.p_count}名 予約中</span></div>
                     </a>`;
