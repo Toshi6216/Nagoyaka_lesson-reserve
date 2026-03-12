@@ -122,15 +122,18 @@ document.addEventListener('DOMContentLoaded', function() {
         //     block: 'start'
         // });
 
-        // --- [ここを修正：スクロール位置の調整] ---
-        // 指定した要素（カード）の場所を取得
+        // [修正ポイント] メニューバーの高さに合わせてスクロール位置を調整する
         const element = document.getElementById('event-list').closest('.card');
         const rect = element.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-        // 画面のてっぺんから「60ピクセル」手前で止まるように計算してスクロール！
+        // メニューバー（固定ヘッダーなど）の高さを取得して、その分を余白にする
+        // ※もしメニューバーのIDが 'main-navbar' なら、そこを書き換えてね
+        const navbar = document.querySelector('.navbar'); // ナビゲーションバーを指定
+        const navbarHeight = navbar ? navbar.offsetHeight : 60; // 高さが取れなければ60を代入
+
         window.scrollTo({
-            top: rect.top + scrollTop - 60, // 「60」の数字を大きくすると、もっと下で止まるよ
+            top: rect.top + scrollTop - (navbarHeight + 20), // 20は少し余裕を持たせるための余白
             behavior: 'smooth'
         });
         // ---------------------------------------
