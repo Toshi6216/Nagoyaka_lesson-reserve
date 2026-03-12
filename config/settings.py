@@ -20,6 +20,8 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000") #ローカルサーバ用
+#BASE_URL = os.getenv("BASE_URL", "https://tapnagoyaka.pythonanywhere.com")  #本番用
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/

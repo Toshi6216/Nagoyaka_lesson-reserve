@@ -73,7 +73,8 @@ def manage_new_user_allauth(request, user, **kwargs):
 
         # 3. 先生と本人にメールを送る
         staff_emails = list(get_user_model().objects.filter(is_staff=True).values_list('email', flat=True))
-        activate_url = f"http://127.0.0.1:8000/booking/activate/{user.id}/"
+        #activate_url = f"http://127.0.0.1:8000/booking/activate/{user.id}/" ローカルサーバ用
+        activate_url = f"{settings.BASE_URL}/booking/activate/{user.id}/"
         
         # スタッフへ
         send_mail(
