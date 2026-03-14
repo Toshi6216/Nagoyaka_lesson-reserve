@@ -182,14 +182,10 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm',
 }
-
-
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True # 認証リンクをクリックしただけで認証完了させる（便利です）
-
 # [ステップ] ログアウトボタンを押した時に「確認画面」を出さずに即実行する
 ACCOUNT_LOGOUT_ON_GET = True
 
-#ACCOUNT_EMAIL_VERIFICATION = 'none'     # 開発中はメール認証をスキップ
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -198,7 +194,7 @@ LOGIN_REDIRECT_URL = '/home/'  # ログイン後の移動先
 ACCOUNT_LOGOUT_REDIRECT_URL = '/home/'  # ログアウト後の移動先
 
 # メールサーバー用の設定（プロ仕様）
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -208,5 +204,3 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 # [ステップ] メールの送信元を「システム名 <メアド>」の形にする
 DEFAULT_FROM_EMAIL = 'TAP_NAGOYAKA <' + os.getenv("EMAIL_HOST_USER") + '>'
-# [ステップ] 登録時のメール確認を「しない」に設定（すぐ使えるようにする）
-ACCOUNT_EMAIL_VERIFICATION = 'none'

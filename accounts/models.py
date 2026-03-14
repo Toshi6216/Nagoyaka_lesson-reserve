@@ -5,8 +5,9 @@ from django.dispatch import receiver
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
-
-
+# [追加] allauth専用の合図をインポート
+from allauth.account.signals import user_signed_up
+User = get_user_model()
 
 class UserManager(BaseUserManager):
     """
@@ -52,11 +53,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.nickname if self.nickname else self.email
     
-User = get_user_model()
-
-# [追加] allauth専用の合図をインポート
-from allauth.account.signals import user_signed_up
-
 # [新しい魔法] 会員登録が「完全に」終わったときに自動で呼ばれる
 @receiver(user_signed_up)
 def manage_new_user_allauth(request, user, **kwargs):
@@ -91,37 +87,3 @@ def manage_new_user_allauth(request, user, **kwargs):
             settings.DEFAULT_FROM_EMAIL,
             [user.email]
         )
-
-# # [ステップ] ユーザーが新しく保存（登録）されたら自動で動く魔法
-# @receiver(post_save, sender=User)
-# def manage_new_user(sender, instance, created, **kwargs):
-#     if created:
-#         # [修正] 確実に nickname を取得するために、念のためリフレッシュする
-#         instance.refresh_from_db()
-        
-#         if not instance.is_staff:
-#             instance.is_active = False
-#             instance.save()
-
-#             # [ステップ] メールの宛先とリンクの準備
-#             staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
-#             activate_url = f"http://127.0.0.1:8000/booking/activate/{instance.id}/"
-#             login_url = "http://127.0.0.1:8000/accounts/login/" # ログイン画面のURL
-
-#             # [修正] スタッフ向け：名前の後ろにスペースを入れ、ログイン不要を明記
-#             subject_staff = "【承認待ち】新しい利用者が登録されました"
-#             message_staff = f"{instance.nickname} さんが登録申請しました。\n" \
-#                             f"内容を確認して、問題なければ以下のリンクを押して承認してください。\n\n" \
-#                             f"承認リンク（ログイン不要）：\n{activate_url}"
-            
-#             send_mail(subject_staff, message_staff, settings.DEFAULT_FROM_EMAIL, staff_emails)
-
-#             # [修正] 本人向け：名前の後ろにスペースを入れ、ログインURLを案内
-#             subject_user = "会員登録の申請を受け付けました"
-#             message_user = f"{instance.nickname} 様\n\n" \
-#                            f"ご登録ありがとうございます。\n" \
-#                            f"現在、スタッフが内容を確認しております。\n" \
-#                            f"承認が完了するまでログインはお待ちください。\n\n" \
-#                            f"承認後のログイン画面はこちら：\n{login_url}"
-            
-#             send_mail(subject_user, message_user, settings.DEFAULT_FROM_EMAIL, [instance.email])
