@@ -109,12 +109,16 @@ def quit_reservation(request, res_id):
         # --- キャンセル通知メール（自分を含む全スタッフに送信） ---
         staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
         if staff_emails:
+            # [重要ステップ] UTC時間を日本時間に変換する
+            local_start = timezone.localtime(res.start)
+            
             subject = f"【キャンセル】{res.title} - {request.user.nickname}様"
             message = (
                 f"管理者 各位\n\n"
                 f"以下のレッスンの予約がキャンセルされました。\n\n"
                 f"■レッスン名: {res.title}\n"
-                f"■日時: {res.start.strftime('%m/%d %H:%M')} ～\n"
+                # [修正ポイント] local_start を使うように変更
+                f"■日時: {local_start.strftime('%m/%d %H:%M')} ～\n"
                 f"■キャンセル者: {request.user.nickname} 様\n"
             )
             try:
@@ -123,12 +127,43 @@ def quit_reservation(request, res_id):
                 pass
 
     # --- [重要] 返し方の切り分け ---
-    # JavaScript（fetch）からのリクエスト（予約一覧ページなど）の場合
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
         return JsonResponse({'status': 'ok'})
     
-    # 普通のボタン（詳細ページなど）からのリクエストの場合
     return redirect('booking:lesson_detail', pk=res_id)
+
+# @login_required
+# @require_POST
+# def quit_reservation(request, res_id):
+#     """[ステップ] 予約をキャンセルし、JavaScriptかHTMLかに合わせて正しく返事をするよ"""
+#     res = get_object_or_404(Reservation, id=res_id)
+    
+#     if request.user in res.participants.all():
+#         res.participants.remove(request.user)
+        
+#         # --- キャンセル通知メール（自分を含む全スタッフに送信） ---
+#         staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
+#         if staff_emails:
+#             subject = f"【キャンセル】{res.title} - {request.user.nickname}様"
+#             message = (
+#                 f"管理者 各位\n\n"
+#                 f"以下のレッスンの予約がキャンセルされました。\n\n"
+#                 f"■レッスン名: {res.title}\n"
+#                 f"■日時: {res.start.strftime('%m/%d %H:%M')} ～\n"
+#                 f"■キャンセル者: {request.user.nickname} 様\n"
+#             )
+#             try:
+#                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, staff_emails)
+#             except:
+#                 pass
+
+#     # --- [重要] 返し方の切り分け ---
+#     # JavaScript（fetch）からのリクエスト（予約一覧ページなど）の場合
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+#         return JsonResponse({'status': 'ok'})
+    
+#     # 普通のボタン（詳細ページなど）からのリクエストの場合
+#     return redirect('booking:lesson_detail', pk=res_id)
 
 # ==========================================
 # 3. レッスン詳細・掲示板・編集

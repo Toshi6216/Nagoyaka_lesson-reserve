@@ -19,9 +19,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000") #ローカルサーバ用
-#BASE_URL = os.getenv("BASE_URL", "https://tapnagoyaka.pythonanywhere.com")  #本番用
+BASE_URL = os.getenv("BASE_URL", "https://tapnagoyaka.pythonanywhere.com")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -60,7 +58,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount', # 将来的にSNSログインを使うなら必要
-    
+
 ]
 
 MIDDLEWARE = [
@@ -182,10 +180,14 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm',
 }
+
+
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True # 認証リンクをクリックしただけで認証完了させる（便利です）
+
 # [ステップ] ログアウトボタンを押した時に「確認画面」を出さずに即実行する
 ACCOUNT_LOGOUT_ON_GET = True
 
+#ACCOUNT_EMAIL_VERIFICATION = 'none'     # 開発中はメール認証をスキップ
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -194,13 +196,20 @@ LOGIN_REDIRECT_URL = '/home/'  # ログイン後の移動先
 ACCOUNT_LOGOUT_REDIRECT_URL = '/home/'  # ログアウト後の移動先
 
 # メールサーバー用の設定（プロ仕様）
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+
+# [ステップ] もし値が空っぽでもエラーにならないようにする
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # 先生への通知メールの送信元として使われるアドレス
-DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
+
+#DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 # [ステップ] メールの送信元を「システム名 <メアド>」の形にする
 DEFAULT_FROM_EMAIL = 'TAP_NAGOYAKA <' + os.getenv("EMAIL_HOST_USER") + '>'
+#DEFAULT_FROM_EMAIL = 'TAP_NAGOYAKA <' + EMAIL_HOST_USER + '>'
+# [ステップ] 登録時のメール確認を「しない」に設定（すぐ使えるようにする）
+ACCOUNT_EMAIL_VERIFICATION = 'none'
