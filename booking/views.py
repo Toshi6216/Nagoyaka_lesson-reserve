@@ -411,12 +411,35 @@ def staff_schedule_view(request):
 def contact_view(request):
     return render(request, 'booking/contact.html')
 
+from django.utils import timezone # [ステップ] 時間を扱うために必要
+
 def contact_send(request):
     if request.method == 'POST':
         name = request.POST.get('name')
-        message = request.POST.get('message')
-        try:
-            send_mail(f"【お問い合わせ】{name}", message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
-        except: pass
+        message_body = request.POST.get('message')
+        
+        # 1. [ステップ] スタッフ全員のメールアドレスを集める
+        staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
+        
+        if staff_emails:
+            # 2. [ステップ] メールの内容を整える（いつ届いたか分かると親切！）
+            now = timezone.localtime(timezone.now()).strftime('%m/%d %H:%M')
+            subject = f"【お問い合わせ】{name} 様（{now}）"
+            full_message = f"送信者: {name} 様\n\n内容:\n{message_body}"
+            
+            # 3. [ステップ] メールを送る（バリア付き）
+            try:
+                send_mail(
+                    subject, 
+                    full_message, 
+                    settings.DEFAULT_FROM_EMAIL, 
+                    staff_emails # [修正] 自分だけじゃなくスタッフ全員に送る
+                )
+                print(f"Contact mail sent to: {staff_emails}")
+            except Exception as e:
+                # [重要] 失敗しても画面は止めない。理由はログ（Server Log）に出す。
+                print(f"Contact mail failed: {e}")
+
         return render(request, 'booking/contact_success.html')
+    
     return redirect('booking:contact')
