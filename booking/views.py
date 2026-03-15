@@ -229,7 +229,7 @@ def post_message(request, pk):
                 f"■投稿者: {request.user.nickname} 様\n"
                 f"■内容:\n{text}\n\n"
                 f"以下のURLから確認してください。\n"
-                f"{settings.BASE_URL}/booking/lesson/{pk}/"
+                f"{settings.BASE_URL}/booking/lesson/{pk}/detail/"
             )
             
             # 4. [バリア] メール送信
