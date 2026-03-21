@@ -27,7 +27,21 @@ def calendar_view(request):
 @login_required
 def get_reservations(request):
     """[ステップ] 1日1つのマークにまとめつつ、詳細データも送るよ"""
-    reservations = Reservation.objects.all()
+    #reservations = Reservation.objects.all()
+
+    """[ステップ] 3か月前までのデータに絞って、カレンダーに送るよ"""
+    
+    # --- [追加] ここから：3か月前の日付を計算 ---
+    from django.utils import timezone
+    from datetime import timedelta
+    # 今から90日（約3か月）前より後のものだけを表示対象にする
+    three_months_ago = timezone.now() - timedelta(days=90)
+    # ------------------------------------------
+
+    # --- [修正] all() ではなく filter(...) を使う ---
+    reservations = Reservation.objects.filter(start__gte=three_months_ago)
+    # ------------------------------------------
+
     daily_data = {}
     event_list = []
     # [ステップ] すでにマークをつけた日付を覚えておくためのセット
@@ -246,39 +260,7 @@ def post_message(request, pk):
 
     return redirect('booking:lesson_detail', pk=pk)
 
-# @login_required
-# @require_POST
-# def post_message(request, pk):
-#     """[ステップ] 掲示板にメッセージを書き込み、先生にメールで知らせるよ"""
-#     res = get_object_or_404(Reservation, pk=pk)
-#     text = request.POST.get('text')
 
-#     if text:
-#         # メッセージを保存
-#         LessonMessage.objects.create(
-#             reservation=res,
-#             author=request.user,
-#             text=text
-#         )
-
-#         # --- [追加] 投稿者が生徒の場合、先生（スタッフ）へメール通知 ---
-#         if not request.user.is_staff:
-#             staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
-#             subject = f"【掲示板投稿】{res.title} - {request.user.nickname}様"
-#             message = (
-#                 f"管理者 各位\n\n"
-#                 f"以下のレッスンの掲示板に新しい投稿がありました。\n\n"
-#                 f"■レッスン名: {res.title}\n"
-#                 f"■投稿者: {request.user.nickname} 様\n"
-#                 f"■内容:\n{text}\n\n"
-#                 f"確認して返信してください。"
-#             )
-#             try:
-#                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, staff_emails)
-#             except: pass
-#         # --------------------------------------------------------
-
-#     return redirect('booking:lesson_detail', pk=pk)
 
 @login_required
 def message_list_view(request):
@@ -470,33 +452,3 @@ def contact_send(request):
 
     return redirect('booking:contact')
 
-# def contact_send(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         message_body = request.POST.get('message')
-
-#         # 1. [ステップ] スタッフ全員のメールアドレスを集める
-#         staff_emails = list(User.objects.filter(is_staff=True).values_list('email', flat=True))
-
-#         if staff_emails:
-#             # 2. [ステップ] メールの内容を整える（いつ届いたか分かると親切！）
-#             now = timezone.localtime(timezone.now()).strftime('%m/%d %H:%M')
-#             subject = f"【お問い合わせ】{name} 様（{now}）"
-#             full_message = f"送信者: {name} 様\n\n内容:\n{message_body}"
-
-#             # 3. [ステップ] メールを送る（バリア付き）
-#             try:
-#                 send_mail(
-#                     subject,
-#                     full_message,
-#                     settings.DEFAULT_FROM_EMAIL,
-#                     staff_emails # [修正] 自分だけじゃなくスタッフ全員に送る
-#                 )
-#                 print(f"Contact mail sent to: {staff_emails}")
-#             except Exception as e:
-#                 # [重要] 失敗しても画面は止めない。理由はログ（Server Log）に出す。
-#                 print(f"Contact mail failed: {e}")
-
-#         return render(request, 'booking/contact_success.html')
-
-#     return redirect('booking:contact')

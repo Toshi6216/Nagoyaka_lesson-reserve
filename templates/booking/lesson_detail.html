@@ -87,6 +87,12 @@
                         </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary fw-bold">変更を保存する</button>
+                            
+                            <button type="button" class="btn btn-outline-danger btn-sm mt-3" onclick="deleteLesson()">
+                                <i class="bi bi-trash"></i> このレッスンを完全に削除する
+                            </button>
+                  
+
                             <button type="button" class="btn btn-outline-secondary" onclick="toggleEditMode()">戻る</button>
                         </div>
                     </form>
@@ -167,5 +173,32 @@ document.addEventListener('submit', function(event) {
         if (btn) setButtonLoading(btn, true);
     }
 });
+
+// lesson_detail.html の末尾の <script> 内に追加
+function deleteLesson() {
+    if (confirm('このレッスンを削除してもよろしいですか？\n予約している人のデータもすべて消えてしまいます。')) {
+        // [ステップ] サーバーに「消して！」とお願いする通信
+        fetch("{% url 'booking:delete_reservation' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                'res_id': '{{ res.pk }}'
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('削除しました。');
+                window.location.href = "{% url 'booking:calendar' %}"; // カレンダーに戻る
+            } else {
+                alert('エラーが起きました。スタッフ権限があるか確認してください。');
+            }
+        });
+    }
+}
+
 </script>
 {% endblock %}
