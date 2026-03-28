@@ -285,3 +285,48 @@ body {
     line-height: 4rem;
   }
 }
+
+/* パスワードリセット画面専用のスタイル */
+.password-reset-box {
+    background-color: rgba(255, 255, 255, 0.95); /* 真っ白に近い背景 */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    color: #333; /* 文字を濃いグレーにして読みやすく */
+    max-width: 500px;
+    margin: 50px auto;
+}
+
+.password-reset-box h2 {
+    color: #e67e22; /* サイトカラーのオレンジ */
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.password-reset-box p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* 入力欄とボタンを使いやすく */
+.password-reset-box input[type="email"],
+.password-reset-box input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.password-reset-box button {
+    width: 100%;
+    background-color: #ffc107; /* 警告色の黄色（目立つ！） */
+    color: #000;
+    border: none;
+    padding: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+}
