@@ -213,3 +213,6 @@ DEFAULT_FROM_EMAIL = 'TAP_NAGOYAKA <' + os.getenv("EMAIL_HOST_USER") + '>'
 #DEFAULT_FROM_EMAIL = 'TAP_NAGOYAKA <' + EMAIL_HOST_USER + '>'
 # [ステップ] 登録時のメール確認を「しない」に設定（すぐ使えるようにする）
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# settings.py のどこでも良いので追加
+CSRF_FAILURE_VIEW = 'booking.views.csrf_failure_view'

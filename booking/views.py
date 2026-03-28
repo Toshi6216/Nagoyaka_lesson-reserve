@@ -452,3 +452,7 @@ def contact_send(request):
 
     return redirect('booking:contact')
 
+# views.py のどこか（一番下など）に追加
+def csrf_failure_view(request, reason=""):
+    """[ステップ] CSRFエラーが起きたときに、やさしくホームへ案内する画面"""
+    return render(request, '403_csrf.html', status=403)

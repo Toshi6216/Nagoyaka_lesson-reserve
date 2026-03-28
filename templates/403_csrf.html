@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="password-reset-box shadow-lg text-center">
+        <h2 style="color: #d9534f;">時間がたってしまいました</h2>
+        <div class="my-4">
+            <i class="bi bi-clock-history text-danger" style="font-size: 3rem;"></i>
+        </div>
+        <p class="fw-bold">
+            安全のため、一度 画面を<br>
+            新しくする必要があります。
+        </p>
+        <p class="small text-muted">
+            ずっと同じ画面を開いていたり、<br>
+            戻るボタンを何度も押すと<br>
+            この画面が出ることがあります。
+        </p>
+        <div class="mt-4 border-top pt-3">
+            <a href="/" class="btn btn-warning w-100 fw-bold">ホーム画面へもどる</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
