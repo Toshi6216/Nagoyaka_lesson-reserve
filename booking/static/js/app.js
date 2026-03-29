@@ -56,56 +56,63 @@ document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     if (!calendarEl) return;
 
- 
     /**
-     * [ステップ6修正] 1つのマークに詰め込まれた「全レッスン」を画面に表示する
+     * [ステップ] 指定した日のレッスン一覧を表示する（ボタン付き）
      */
-    function updateSidebarDisplay(dateStr, calendarInstance) {
-        const eventListEl = document.getElementById('event-list');
-        const selectedDateEl = document.getElementById('selected-date');
-        
-        if (selectedDateEl) selectedDateEl.innerText = dateStr + " の予約";
-        eventListEl.innerHTML = "";
+  
+    function updateSidebarDisplay(dateStr, calendar) {
+        selectedDateStr = dateStr;
+        const lessons = cachedDailyData[dateStr] || [];
+        // calendar.html側の受け皿IDに合わせる
+        // const infoArea = document.getElementById('selected-date-info-area') || document.getElementById('selected-date-info');
+        const infoArea = document.getElementById('selected-date-info');
+        const container = document.getElementById('lesson-info-container');
+        const label = document.getElementById('selected-date-label');
+        const createBtn = document.getElementById('create-btn');
 
-        // 1. その日の「マーク（イベント）」を1つだけ見つける [cite: 38]
-        const dayMark = calendarInstance.getEvents().find(e => e.startStr === dateStr);
-        
-        // 2. マークがない、または中にレッスンが入っていない場合 [cite: 39]
-        if (!dayMark || !dayMark.extendedProps.lessons) {
-            eventListEl.innerHTML = '<div class="p-5 text-center text-muted">予約はありません</div>';
-            return;
+        const d = new Date(dateStr);
+        label.innerText = `${d.getMonth() + 1}月${d.getDate()}日のレッスン`;
+
+        if (lessons.length > 0) {
+            let html = '';
+            lessons.forEach(res => {
+                // [ここが重要！] ボタン付きの新しい設計図です
+                html += `
+                    <div class="lesson-summary-item p-3 mb-3 shadow-sm border rounded bg-white">
+                        <div class="row align-items-center">
+                            <div class="col-7">
+                                <h6 class="mb-1 fw-bold text-dark">${res.title}</h6>
+                                <div class="small text-secondary">
+                                    <i class="bi bi-clock"></i> ${res.start_time}〜
+                                </div>
+                            </div>
+                            <div class="col-5 d-grid gap-1">
+                                <a href="/booking/lesson/${res.id}/detail/" class="btn btn-sm btn-outline-primary fw-bold p-1" style="font-size: 0.75rem;">詳細</a>
+                                <a href="/booking/lesson/${res.id}/detail/" class="btn btn-sm btn-warning fw-bold p-1 text-dark" style="font-size: 0.75rem;">参加</a>
+                            </div>
+                        </div>
+                        ${isStaff ? `
+                            <div class="mt-2 text-end border-top pt-1">
+                                <button class="btn btn-link btn-sm text-danger p-0" onclick="window.deleteLesson('${res.id}', '${res.title}', '${dateStr}')">
+                                    <i class="bi bi-trash"></i> 削除
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            infoArea.innerHTML = html;
+        } else {
+            infoArea.innerHTML = '<p class="text-muted text-center py-3">予定はありません</p>';
         }
 
-        // 3. 詰め込まれたレッスン情報を取り出し、開始時間順に並べる
-        const dailyLessons = dayMark.extendedProps.lessons;
-        dailyLessons.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-        // 4. 各レッスンをカードにして表示する [cite: 41]
-        dailyLessons.forEach(lesson => {
-            const start = new Date(lesson.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const end = new Date(lesson.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            const div = document.createElement('div');
-            div.className = "list-group-item p-3 border-start border-4 border-primary mb-3 shadow-sm rounded bg-white";
-            div.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
-                <div style="flex: 1;">
-                    <h5 class="mb-1 fw-bold text-dark">${lesson.title}</h5>
-                    <p class="mb-0 text-primary small"><i class="bi bi-clock"></i> ${start} ～ ${end}</p>
-                    <div class="mt-1">
-                        ${lesson.p_count > 0 ? `<span class="badge bg-success small me-1">予約 ${lesson.p_count}名</span>` : ''}
-                        ${lesson.has_new_message ? `<span class="badge bg-danger small">New</span>` : ''}
-                    </div>
-                </div>
-                <div class="ms-2">
-                    <a href="/booking/lesson/${lesson.id}/detail/" class="btn btn-sm btn-info text-white px-3">詳細</a>
-                    ${isTeacher ? `<button class="btn btn-sm btn-outline-danger mt-1 d-block w-100" onclick="window.deleteLesson(${lesson.id}, '${lesson.title}', '${dateStr}')">削除</button>` : ''}
-                </div>
-            </div>`;
-            eventListEl.appendChild(div);
-        });
+        container.classList.remove('d-none');
+        if (createBtn) {
+            createBtn.classList.remove('d-none');
+            createBtn.href = `/booking/lesson/add/?date=${dateStr}`;
+        }
     }
-
+    
     /**
      * [ステップ7] レッスンを新しく作る処理（先生用）
      */

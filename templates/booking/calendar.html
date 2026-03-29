@@ -40,6 +40,8 @@
                     <div class="p-4 text-center text-muted">カレンダーの日付をタップすると<br>ここに詳細が出ます</div>
                 </div>
             </div>
+            <div class="card-body p-3" id="selected-date-info-area">
+            </div>
         </div>
 
         <div class="col-lg-8">
@@ -68,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var dateInfo = document.getElementById('selected-date-info');
     var cachedDailyData = {};
 
+ 
     // [ステップ] 共通のクリック処理をひとまとめにするよ
     function handleDateSelection(dateStr) {
         document.getElementById('selected-date-header').innerText = dateStr;
@@ -86,42 +89,76 @@ document.addEventListener('DOMContentLoaded', function() {
             listEl.innerHTML = '<div class="p-4 text-center text-muted">この日のレッスンはありません</div>';
         } else {
             var html = '<div class="list-group list-group-flush">';
+                // ---------------------------------------
+            // 各レッスンの情報を1つずつ組み立てる
             eventsOnDay.forEach(function(ev) {
-                // 1. ev.start を JSの Dateオブジェクトに変換する
                 var startDate = new Date(ev.start);
-
-                // 2. 日本時間（JST）の「時(H)」と「分(m)」をそれぞれ取得する
                 var hours = startDate.getHours();
                 var minutes = startDate.getMinutes();
+                var startTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
 
-                // 3. 2桁になるようにゼロ埋めして整形（例：9時 -> 09時）
-                var startTime = 
-                    ('0' + hours).slice(-2) + ':' + 
-                    ('0' + minutes).slice(-2);
+                // [ステップ] カード形式で「詳細」と「参加」ボタンを表示
+                html += `
+                    <div class="list-group-item p-3 mb-2 shadow-sm rounded border bg-white">
+                        <div class="row align-items-center">
+                            <div class="col-7">
+                                <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${ev.title}</h6>
+                                <div class="small text-secondary">
+                                    <i class="bi bi-clock me-1"></i>${startTime}～
+                                </div>
+                                <div class="mt-1">
+                                    <span class="badge bg-light text-dark border p-1" style="font-size: 0.7rem;">
+                                        ${ev.p_count}名 予約中
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-5 d-grid gap-1">
+                                <a href="/booking/lesson/${ev.id}/detail/" class="btn btn-sm btn-outline-primary fw-bold p-1 px-2" style="font-size: 0.75rem;">
+                                    <i class="bi bi-search me-1"></i>詳細を見る
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>`;
+            });
+            // ---------------------------------------
+
+            // eventsOnDay.forEach(function(ev) {
+            //     // 1. ev.start を JSの Dateオブジェクトに変換する
+            //     var startDate = new Date(ev.start);
+
+            //     // 2. 日本時間（JST）の「時(H)」と「分(m)」をそれぞれ取得する
+            //     var hours = startDate.getHours();
+            //     var minutes = startDate.getMinutes();
+
+            //     // 3. 2桁になるようにゼロ埋めして整形（例：9時 -> 09時）
+            //     var startTime = 
+            //         ('0' + hours).slice(-2) + ':' + 
+            //         ('0' + minutes).slice(-2);
 
                
-                html += `
-                    <a href="/booking/lesson/${ev.id}/detail/" class="list-group-item list-group-item-action p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="mb-1 fw-bold text-primary">${ev.title}</h6>
-                            <div class="lesson-time">
-                                <span class="time-label">開始時間：</span>
-                                <span class="time-value">${startTime}～</span>
-                            </div>
+            //     html += `
+            //         <a href="/booking/lesson/${ev.id}/detail/" class="list-group-item list-group-item-action p-3">
+            //             <div class="d-flex justify-content-between align-items-center">
+            //                 <h6 class="mb-1 fw-bold text-primary">${ev.title}</h6>
+            //                 <div class="lesson-time">
+            //                     <span class="time-label">開始時間：</span>
+            //                     <span class="time-value">${startTime}～</span>
+            //                 </div>
 
-                        </div>
-                        <div class="mt-1"><span class="badge bg-info text-dark">${ev.p_count}名 予約中</span></div>
-                    </a>`;
-            });
+            //             </div>
+            //             <div class="mt-1"><span class="badge bg-info text-dark">${ev.p_count}名 予約中</span></div>
+
+
+
+            //         </a>`;
+            // });
+
+
             html += '</div>';
             listEl.innerHTML = html;
         }
-
-        // 3. 自動スクロール
-        // document.getElementById('event-list').closest('.card').scrollIntoView({
-        //     behavior: 'smooth',
-        //     block: 'start'
-        // });
 
         // [修正ポイント] メニューバーの高さに合わせてスクロール位置を調整する
         const element = document.getElementById('event-list').closest('.card');
@@ -172,5 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     calendar.render();
 });
+
+    
+
 </script>
 {% endblock %}
