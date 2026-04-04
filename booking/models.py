@@ -1,9 +1,12 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from datetime import timedelta
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
 
 
 # [ステップ] 予約（レッスン）自体のデータを保存する箱
@@ -60,36 +63,3 @@ class LessonMessage(models.Model):
         verbose_name="投稿者"
     )
     
-    # [解説] メッセージの内容だよ
-    text = models.TextField(verbose_name="メッセージ内容")
-    
-    # [解説] 書いた時間を自動で記録するよ
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="投稿日時")
-
-    class Meta:
-        verbose_name = "レッスンメッセージ"
-        ordering = ['created_at'] # 古い順（会話が続く順）に並べるよ
-
-    def __str__(self):
-        # author.nickname があることを前提にしているよ
-        return f"{self.author.nickname}: {self.text[:10]}"
-    
-    # [ステップ] 30日経ったメッセージを「古い」と判断する命令だよ
-    @property
-    def is_expired(self):
-        # レッスンの日から30日を計算するよ
-        expiry_date = self.reservation.start + timedelta(days=30)
-        return timezone.now() > expiry_date
-    
-# booking/models.py
-
-class BoardAccess(models.Model):
-    # [ステップ] 「だれが」「どの掲示板を」見たかを紐づけるよ
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
-    
-    # [ステップ] 最後に見た時間を記録するよ（更新されるたびに時間が新しくなる設定だよ）
-    last_accessed_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ('user', 'reservation') # 1人1レッスンにつき1つの記録にするよ

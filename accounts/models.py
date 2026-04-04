@@ -40,7 +40,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
 
     # [ステップ] ニックネームを保存できるようにするよ
-    nickname = models.CharField(max_length=30, blank=True, verbose_name="ニックネーム")
+    nickname = models.CharField(max_length=30, blank=True, unique=True, verbose_name="ニックネーム")
 
     objects = UserManager()
 

@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("個人情報", {"fields": ("nickname",)}), # ここに追加
-        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser", "groups", "user_permissions")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser", "groups", "user_permissions", "date_joined")}),
     )
     
     # ユーザー作成画面の項目にも追加
