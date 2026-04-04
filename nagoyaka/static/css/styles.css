@@ -40,7 +40,7 @@ body {
 /* 三本線のアイコンを白い設計図に書き換える魔法 */
 .navbar-toggler-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-  filter: none !important; 
+  filter: none !important;
 }
 
 /* スマホでメニューを開いたときの背景色 */
@@ -75,7 +75,7 @@ body {
     justify-content: center;
     gap: 2rem;
   }
-  
+
   .intro-img {
     width: 50% !important; /* 画像の幅を半分に固定 */
     height: auto;
@@ -151,7 +151,7 @@ body {
         margin-left: auto;
         width: 200px; /* メニューの横幅を少しコンパクトにするともっと右寄せ感が出ます */
     }
-    
+
     .nav-item {
         width: 100%;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 項目ごとにうっすら線を引いて見やすくするよ */
@@ -191,17 +191,17 @@ body {
 }
 
 
-.contact-container { 
-  max-width: 500px; 
-  margin: 40px auto; 
-  padding: 30px; 
+.contact-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
   /* 1. 背景を真っ白にして、後ろの画像が見えないようにするよ */
-  background-color: white; 
+  background-color: white;
   /* 2. 枠線を少し太く、色をはっきりさせるよ */
-  border: 1px solid #ddd; 
-  border-radius: 12px; 
+  border: 1px solid #ddd;
+  border-radius: 12px;
   /* 3. 箱のまわりに ふわっと影をつけて、浮いてるように見せるよ */
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 /* 4. タイトルや説明文の色を「黒」にして読みやすくするよ */
@@ -236,8 +236,8 @@ body {
 }
 
 /* 白い板の中にあるテーブルの文字も、背景に負けないように黒くする */
-.glass-container table, 
-.glass-container th, 
+.glass-container table,
+.glass-container th,
 .glass-container td {
     color: #333 !important;
 }
@@ -267,11 +267,11 @@ body {
 .site-heading .site-heading-lower {
   /* --- 👇【すべての画面（スマホ）での基本設定】👇 --- */
   font-weight: 100;
-  
+
   /* [ここを修正] スマホでは、文字を少し小さくして、2行になってもいい感じにするよ */
   font-size: 2.5rem;   /* 5rem から半分にしました */
   line-height: 2.8rem; /* 行と行の間隔も少し狭くします */
-  
+
   color: #e1d5c9; /* 上品なベージュ色 */
   opacity: 0.9;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);

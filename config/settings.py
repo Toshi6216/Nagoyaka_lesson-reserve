@@ -171,7 +171,7 @@ AUTHENTICATION_BACKENDS = [
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 # [ステップ] ここが重要！Allauthに「usernameというフィールドは無い」と教える
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # モデルで None にしたので、ここも None
 # 念のため、ACCOUNT_SIGNUP_FIELDS は以下のように整理してください
 # （nickname* は CustomSignupForm で作るので、ここでは書かなくてもOKになります）
@@ -182,7 +182,6 @@ ACCOUNT_FORMS = {
 }
 # [ステップ] 同じメールアドレスでの重複登録を「絶対に」禁止する
 ACCOUNT_UNIQUE_EMAIL = True
-
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True # 認証リンクをクリックしただけで認証完了させる（便利です）
 
