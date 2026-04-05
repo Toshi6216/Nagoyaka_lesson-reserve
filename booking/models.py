@@ -1,9 +1,14 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from datetime import timedelta
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
+# ユーザーモデルを取得
+User = get_user_model()
 
 
 # [ステップ] 予約（レッスン）自体のデータを保存する箱
@@ -93,3 +98,49 @@ class BoardAccess(models.Model):
 
     class Meta:
         unique_together = ('user', 'reservation') # 1人1レッスンにつき1つの記録にするよ
+
+
+
+@receiver(pre_save, sender=User)
+def send_approval_email(sender, instance, **kwargs):
+    """
+    [ステップ] ユーザーが「承認（is_active=True）」された瞬間にメールを送るよ
+    """
+    # すでに登録済みのユーザー（更新時）かどうかチェック
+    if instance.pk:
+        try:
+            # 保存される前の、今の状態をデータベースから持ってくる
+            old_instance = User.objects.get(pk=instance.pk)
+            
+            # 【重要】以前は「無効(False)」で、今回「有効(True)」に切り替わった場合だけ実行
+            if not old_instance.is_active and instance.is_active:
+                
+                subject = "【TAP_NAGOYAKA】アカウント承認が完了しました"
+                
+                # メール本文に渡すデータ
+                context = {
+                    'user': instance,
+                    # PythonAnywhereなどの本番ドメインに合わせてね
+                    # [修正] 直接書かずに settings の値を使う！
+                    'login_url': f"{settings.BASE_URL}/accounts/login/",
+                    # [ポイント] ここで /home をガッチャンコする
+                    'home_url': f"{settings.BASE_URL}/home/",
+                }
+                
+                # 本文を組み立てる（※このあと作成するテキストファイルを読み込むよ）
+                message = render_to_string('booking/emails/approved_notification.txt', context)
+                
+                try:
+                    send_mail(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [instance.email],
+                        fail_silently=False,
+                    )
+                    print(f"承認メールを送信しました: {instance.email}")
+                except Exception as e:
+                    print(f"メール送信エラー: {e}")
+                    
+        except User.DoesNotExist:
+            pass

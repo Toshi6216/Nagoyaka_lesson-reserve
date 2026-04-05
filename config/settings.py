@@ -19,7 +19,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_URL = os.getenv("BASE_URL", "https://tapnagoyaka.pythonanywhere.com")
+#BASE_URL = "https://tapnagoyaka.pythonanywhere.com/home"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -36,7 +36,8 @@ except ImportError:
     from django.core.management.utils import get_random_secret_key
     SECRET_KEY = get_random_secret_key()
     ALLOWED_HOSTS = [".pythonanywhere.com"]
-
+  
+    
 
 # Application definition
 
@@ -217,3 +218,13 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # settings.py のどこでも良いので追加
 CSRF_FAILURE_VIEW = 'booking.views.csrf_failure_view'
+
+# --- 確実な方法として、ファイルの最後の方にこう書くのが一番安全です ---
+if not locals().get('BASE_URL'):
+    BASE_URL = "https://tapnagoyaka.pythonanywhere.com"
+
+# [ステップ] メールのリンクなどの「看板の住所」を BASE_URL に合わせるよ
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
+
+# リンクのベースを BASE_URL (/home 込み) に固定する設定
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "" # メールの件名の [example.com] を消す設定（おまけ）
